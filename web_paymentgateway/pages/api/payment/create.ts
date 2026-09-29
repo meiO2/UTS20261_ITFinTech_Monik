@@ -1,7 +1,9 @@
     import type { NextApiRequest, NextApiResponse } from "next";
+    import dbConnect from "../../../lib/mongodb";
+    import Checkout from "../../../models/Checkout";
 
     type Item = {
-    id: string;
+    productId: string;
     name: string;
     price: number;
     qty: number;
@@ -9,6 +11,8 @@
 
     type RequestBody = {
     items: Item[];
+    subtotal: number;
+    tax: number;
     total: number;
     table: string;
     note?: string;
@@ -26,7 +30,15 @@
     }
 
     try {
-        const { items, total, table, note, method }: RequestBody = req.body;
+        const {
+        items,
+        subtotal,
+        tax,
+        total,
+        table,
+        note,
+        method,
+        }: RequestBody = req.body;
 
         if (!items || items.length === 0) {
         return res.status(400).json({
@@ -40,6 +52,12 @@
         });
         }
 
+        if (!table || !table.trim()) {
+        return res.status(400).json({
+            message: "Table number is required",
+        });
+        }
+
         const serverKey = process.env.MIDTRANS_SERVER_KEY;
 
         if (!serverKey) {
@@ -50,25 +68,34 @@
 
         const orderId = `GUPA-${Date.now()}`;
 
-        // Calculate tax from the difference between total and item subtotal
-        const subtotal = items.reduce(
-        (sum, item) => sum + item.price * item.qty,
-        0
-        );
+        await dbConnect();
 
-        const tax = total - subtotal;
+        // Save checkout/order to MongoDB
+        await Checkout.create({
+        orderId,
+        table,
+        items: items.map((item) => ({
+            productId: item.productId,
+            name: item.name,
+            price: item.price,
+            quantity: item.qty,
+        })),
+        subtotal,
+        tax,
+        total,
+        note: note || "",
+        status: "PENDING",
+        });
 
-        /*
-        * Midtrans requires gross_amount to equal
-        * the total of all item_details.
-        */
+        // Midtrans item details
         const itemDetails = [
         ...items.map((item) => ({
-            id: item.id,
+            id: item.productId,
             price: item.price,
             quantity: item.qty,
             name: item.name,
         })),
+
         ...(tax > 0
             ? [
                 {
@@ -83,66 +110,69 @@
 
         let chargeBody: Record<string, unknown>;
 
-        // QRIS
         if (method === "qris") {
         chargeBody = {
             payment_type: "qris",
+
             transaction_details: {
             order_id: orderId,
             gross_amount: total,
             },
+
             item_details: itemDetails,
+
             qris: {
             acquirer: "gopay",
             },
         };
-        }
-
-        // GoPay / E-wallet
-        else if (method === "ewallet") {
+        } else if (method === "ewallet") {
         chargeBody = {
             payment_type: "gopay",
+
             transaction_details: {
             order_id: orderId,
             gross_amount: total,
             },
+
             item_details: itemDetails,
         };
-        }
-
-        // Bank Transfer
-        else if (method === "va") {
+        } else if (method === "va") {
         chargeBody = {
             payment_type: "bank_transfer",
+
             transaction_details: {
             order_id: orderId,
             gross_amount: total,
             },
+
             item_details: itemDetails,
+
             bank_transfer: {
             bank: "bca",
             },
         };
-        }
-
-        else {
+        } else {
         return res.status(400).json({
             message:
             "Card payment will be added separately because it requires card tokenization.",
         });
         }
 
-        const auth = Buffer.from(`${serverKey}:`).toString("base64");
+        const auth = Buffer.from(
+        `${serverKey}:`
+        ).toString("base64");
 
         const response = await fetch(
         "https://api.sandbox.midtrans.com/v2/charge",
         {
             method: "POST",
+
             headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
             Authorization: `Basic ${auth}`,
             },
+
             body: JSON.stringify(chargeBody),
         }
         );
@@ -157,6 +187,7 @@
             data?.status_message ||
             data?.error_messages?.[0] ||
             "Midtrans payment failed",
+
             midtrans: data,
         });
         }
