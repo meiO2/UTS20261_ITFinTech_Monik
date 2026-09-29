@@ -29,6 +29,8 @@
 
     html {
     -webkit-text-size-adjust: 100%;
+    overflow-y: scroll;
+    scrollbar-gutter: stable;
     }
 
     body {

@@ -17,7 +17,11 @@
     table: string;
     note?: string;
     method: string;
+    bank?: string; // NEW: bank chosen for bank transfer (bca | bni | bri)
     };
+
+    // NEW: banks we accept for bank transfer
+    const ALLOWED_BANKS = ["bca", "bni", "bri"];
 
     export default async function handler(
     req: NextApiRequest,
@@ -38,6 +42,7 @@
         table,
         note,
         method,
+        bank,
         }: RequestBody = req.body;
 
         if (!items || items.length === 0) {
@@ -55,6 +60,15 @@
         if (!table || !table.trim()) {
         return res.status(400).json({
             message: "Table number is required",
+        });
+        }
+
+        // NEW: pick the bank (defaults to BCA if none is sent) and reject unknown ones
+        const selectedBank = (bank || "bca").toLowerCase();
+
+        if (method === "va" && !ALLOWED_BANKS.includes(selectedBank)) {
+        return res.status(400).json({
+            message: "Selected bank is not supported",
         });
         }
 
@@ -148,34 +162,28 @@
             item_details: itemDetails,
 
             bank_transfer: {
-            bank: "bca",
+            bank: selectedBank, // CHANGED: was hardcoded "bca"
             },
         };
         } else {
         return res.status(400).json({
-            message:
-            "Card payment will be added separately because it requires card tokenization.",
+            message: "Unsupported payment method",
         });
         }
 
-        const auth = Buffer.from(
-        `${serverKey}:`
-        ).toString("base64");
+        const auth = Buffer.from(`${serverKey}:`).toString("base64");
 
-        const response = await fetch(
-        "https://api.sandbox.midtrans.com/v2/charge",
-        {
-            method: "POST",
+        const response = await fetch("https://api.sandbox.midtrans.com/v2/charge", {
+        method: "POST",
 
-            headers: {
+        headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
             Authorization: `Basic ${auth}`,
-            },
+        },
 
-            body: JSON.stringify(chargeBody),
-        }
-        );
+        body: JSON.stringify(chargeBody),
+        });
 
         const data = await response.json();
 
