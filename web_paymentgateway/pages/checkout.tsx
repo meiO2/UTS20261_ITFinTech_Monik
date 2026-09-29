@@ -1,13 +1,11 @@
-    "use client";
-
     import Image from "next/image";
     import Link from "next/link";
-    import { useRouter } from "next/navigation";
-    import PageHeader from "../../components/PageHeader";
-    import ProductImage from "../../components/ProductImage";
-    import QtyStepper from "../../components/QtyStepper";
-    import { useCart } from "../../context/CartContext";
-    import { TAX_RATE, formatRupiah } from "../../lib/format";
+    import { useRouter } from "next/router";
+    import PageHeader from "../components/PageHeader";
+    import ProductImage from "../components/ProductImage";
+    import QtyStepper from "../components/QtyStepper";
+    import { useCart } from "../context/CartContext";
+    import { TAX_RATE, formatRupiah } from "../lib/format";
 
     export default function CheckoutPage() {
     const router = useRouter();

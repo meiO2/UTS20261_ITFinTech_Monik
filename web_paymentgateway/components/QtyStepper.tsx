@@ -1,5 +1,3 @@
-    "use client";
-
     type QtyStepperProps = {
     name: string;
     qty: number;

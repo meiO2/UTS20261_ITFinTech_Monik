@@ -1,5 +1,3 @@
-    "use client";
-
     import { useCart } from "../context/CartContext";
     import type { Product } from "../data/products";
     import { formatRupiah } from "../lib/format";

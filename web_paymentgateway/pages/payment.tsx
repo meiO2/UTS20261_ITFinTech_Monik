@@ -1,12 +1,10 @@
-    "use client";
-
     import { useState } from "react";
     import Image from "next/image";
     import Link from "next/link";
-    import PageHeader from "../../components/PageHeader";
-    import { CheckIcon } from "../../components/Icons";
-    import { useCart } from "../../context/CartContext";
-    import { TAX_RATE, formatRupiah } from "../../lib/format";
+    import PageHeader from "../components/PageHeader";
+    import { CheckIcon } from "../components/Icons";
+    import { useCart } from "../context/CartContext";
+    import { TAX_RATE, formatRupiah } from "../lib/format";
 
     // Edit this list to match the methods your payment gateway supports.
     const METHODS = [

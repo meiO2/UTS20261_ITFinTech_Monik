@@ -1,6 +1,7 @@
     // Edit this file to change your menu.
-    // `image` points to a file inside /public/products/. If the file is missing,
-    // the card shows a cream placeholder with the Gupa logo instead.
+    // `image` is a full web link, e.g. "https://images.unsplash.com/photo-....?w=800".
+    // Leave it as "" (or if the link breaks) and the card shows a cream
+    // placeholder with the Gupa logo instead.
     // Prices are in IDR (whole numbers, no dots).
 
     export type ProductCategory = "Food" | "Drinks" | "Snacks" | "Desserts";
@@ -20,7 +21,7 @@
     category: ProductCategory;
     price: number; // IDR
     description: string;
-    image: string;
+    image?: string; // full https:// link to a photo
     };
 
     export const products: Product[] = [
@@ -31,7 +32,7 @@
         category: "Food",
         price: 58000,
         description: "Grilled beef patty, cheddar, pickles and house sauce in a toasted bun.",
-        image: "/products/classic-beef-burger.jpg",
+        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhr18jYhMdi-HIXS8ziOm9GhkEetbqbohmefEopzndKErUwB1uEIjnQIg&s=10", // paste an image link here
     },
     {
         id: "crispy-chicken-burger",
@@ -39,7 +40,7 @@
         category: "Food",
         price: 52000,
         description: "Buttermilk fried chicken, slaw and honey mustard.",
-        image: "/products/crispy-chicken-burger.jpg",
+        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMZicEhqSMp1cakeKCvVVSp7VVeSjeatjISKvrvfR3F1QjkmaynXd_cGrA&s=10", // paste an image link here
     },
     {
         id: "club-sandwich",
@@ -47,7 +48,7 @@
         category: "Food",
         price: 48000,
         description: "Smoked chicken, egg, lettuce and tomato on toasted bread.",
-        image: "/products/club-sandwich.jpg",
+        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRKXaoEG-yF8nEYMnacTh4Dai-wHBRIbF1vBsuOI_J6857PcUJMgqbHR2Y&s=10", // paste an image link here
     },
     {
         id: "aglio-olio",
@@ -55,7 +56,7 @@
         category: "Food",
         price: 45000,
         description: "Garlic, chili flakes and olive oil. Add shrimp for Rp 15.000.",
-        image: "/products/aglio-olio.jpg",
+        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGPRqbM03cbFvgU0R-gEhWB_l4LsVhEVfc-1Z9LymoVL3kgUtyxqX_K7Hg&s=10", // paste an image link here
     },
 
     // ---------- Drinks ----------
@@ -65,7 +66,7 @@
         category: "Drinks",
         price: 28000,
         description: "Espresso, fresh milk and palm sugar over ice.",
-        image: "/products/es-kopi-gula-aren.jpg",
+        image: "https://awsimages.detik.net.id/community/media/visual/2024/10/16/es-kopi-susu-gula-aren.jpeg?w=1200", // paste an image link here
     },
     {
         id: "americano",
@@ -73,7 +74,7 @@
         category: "Drinks",
         price: 24000,
         description: "Double espresso with hot water. Also available iced.",
-        image: "/products/americano.jpg",
+        image: "https://assets-a1.kompasiana.com/items/album/2023/01/15/homemade-iced-americano-recipe-1-720x1080-63c3e4d84addee7149048932.jpg?t=o&v=770", // paste an image link here
     },
     {
         id: "cafe-latte",
@@ -81,7 +82,7 @@
         category: "Drinks",
         price: 30000,
         description: "Smooth espresso with steamed milk.",
-        image: "/products/cafe-latte.jpg",
+        image: "https://www.cuisinart.com/dw/image/v2/ABAF_PRD/on/demandware.static/-/Sites-us-cuisinart-sfra-Library/default/dw42dcae51/images/recipe-Images/cafe-latte1-recipe_resized.jpg?sw=1200&sh=1200&sm=fit", // paste an image link here
     },
     {
         id: "matcha-latte",
@@ -89,7 +90,7 @@
         category: "Drinks",
         price: 32000,
         description: "Ceremonial grade matcha whisked with milk.",
-        image: "/products/matcha-latte.jpg",
+        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIzBSL3X5BwZJV0WA3Rp_OGz89pOMVvE5BsQoOjfhDy-Hptv5ESTrDdDw&s=10", // paste an image link here
     },
     {
         id: "lemon-tea",
@@ -97,7 +98,7 @@
         category: "Drinks",
         price: 20000,
         description: "Black tea with fresh lemon. Light and refreshing.",
-        image: "/products/lemon-tea.jpg",
+        image: "https://dcostseafood.id/wp-content/uploads/2021/12/ES-LEMON-TEA.jpg", // paste an image link here
     },
 
     // ---------- Snacks ----------
@@ -107,7 +108,7 @@
         category: "Snacks",
         price: 26000,
         description: "Crispy shoestring fries with truffle mayo.",
-        image: "/products/french-fries.jpg",
+        image: "https://detoxinista.com/wp-content/uploads/2021/03/best-homemade-fries.jpg", // paste an image link here
     },
     {
         id: "chicken-wings",
@@ -115,7 +116,7 @@
         category: "Snacks",
         price: 38000,
         description: "Six wings, glazed in sweet soy or spicy buffalo.",
-        image: "/products/chicken-wings.jpg",
+        image: "https://www.thecookierookie.com/wp-content/uploads/2024/02/bbq-chicken-wings-recipe-featured-image.jpg", // paste an image link here
     },
     {
         id: "butter-croissant",
@@ -123,7 +124,7 @@
         category: "Snacks",
         price: 22000,
         description: "Flaky, baked fresh every morning.",
-        image: "/products/butter-croissant.jpg",
+        image: "https://homemadehome.com/wp-content/uploads/2017/05/Authentic-All-Butter-Croissants-2-e1634143701147.jpg", // paste an image link here
     },
 
     // ---------- Desserts ----------
@@ -133,7 +134,7 @@
         category: "Desserts",
         price: 24000,
         description: "Moist banana loaf with a hint of cinnamon.",
-        image: "/products/banana-bread.jpg",
+        image: "https://www.allrecipes.com/thmb/fAkQn-FhjF89oTJ5JXpgwvwNf34=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/20144-banana-banana-bread-VAT-009-4x3-B-78f1cfc64bfa451e8a0fead814719b9f.jpg", // paste an image link here
     },
     {
         id: "tiramisu",
@@ -141,6 +142,6 @@
         category: "Desserts",
         price: 36000,
         description: "Espresso-soaked ladyfingers with mascarpone cream.",
-        image: "/products/tiramisu.jpg",
+        image: "https://www.bunsenburnerbakery.com/wp-content/uploads/2016/06/easy-tiramisu-square-29-735x735.jpg", // paste an image link here
     },
     ];
