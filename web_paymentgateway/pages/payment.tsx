@@ -23,23 +23,48 @@
     async function handlePay(): Promise<void> {
         setStatus("processing");
 
-        // ------------------------------------------------------------------
-        // TODO: connect your payment gateway here.
-        // Typical flow:
-        //   1. POST the order to your own API route (e.g. /api/payments) with
-        //      { items, table, note, method }.
-        //   2. Your server creates the transaction with the gateway and returns
-        //      a payment URL / QR string / token.
-        //   3. Show that to the customer (or redirect), then confirm the result
-        //      through the gateway's webhook.
-        //
-        // The lines below only SIMULATE a successful payment so you can see
-        // the confirmation screen. Delete them when you connect the gateway.
-        // ------------------------------------------------------------------
-        await new Promise((r) => setTimeout(r, 1200));
-        setOrderRef("GUPA-" + Math.floor(1000 + Math.random() * 9000));
-        setStatus("paid");
-    }
+        try {
+            const response = await fetch("/api/payment/create", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                items,
+                total,
+                table,
+                note,
+                method,
+            }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+            throw new Error(data.message || "Payment failed");
+            }
+
+            console.log("Payment created:", data);
+
+            setOrderRef(data.orderId);
+
+            // For now, just show the returned Midtrans data.
+            // We will build the QR / VA display next.
+            console.log("Midtrans payment:", data.payment);
+
+            setStatus("paid");
+        } catch (error) {
+            console.error("Payment error:", error);
+
+            setStatus("idle");
+
+            alert(
+            error instanceof Error
+                ? error.message
+                : "Failed to create payment."
+            );
+        }
+        }
 
     // Confirmation screen
     if (status === "paid") {
